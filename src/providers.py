@@ -37,8 +37,29 @@ class MockOfflineProvider(BaseLLMProvider):
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # Nhận diện intent cho Đề tài 2.2: IT Helpdesk
+        if "tạo" in prompt_lower and ("ticket" in prompt_lower or "yêu cầu" in prompt_lower or "vpn" in prompt_lower):
+            return {
+                "type": "tool_call",
+                "tool_name": "create_support_ticket",
+                "arguments": {
+                    "employee_id": "NV2026001",
+                    "issue_category": "Sự cố Mạng / VPN",
+                    "description": "Máy tính bị mất kết nối mạng VPN nội bộ công ty",
+                    "priority": "High"
+                },
+                "thought": "Người dùng yêu cầu tạo ticket hỗ trợ kỹ thuật về sự cố VPN. Tôi sẽ kích hoạt công cụ create_support_ticket qua MCP Server."
+            }
+        elif "tk2026001" in prompt_lower or "tk9999999" in prompt_lower or ("tra cứu" in prompt_lower and "ticket" in prompt_lower):
+            ticket_id = "TK9999999" if "tk9999999" in prompt_lower else "TK2026001"
+            return {
+                "type": "tool_call",
+                "tool_name": "query_ticket",
+                "arguments": {"ticket_id": ticket_id},
+                "thought": f"Người dùng muốn kiểm tra tình trạng ticket sự cố {ticket_id}. Tôi sẽ gọi tool query_ticket qua MCP Server."
+            }
+        # Hỗ trợ nhận diện intent Đề tài 1.1 (Academic)
+        elif "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
             return {
                 "type": "tool_call",
                 "tool_name": "schedule_appointment",
@@ -55,8 +76,8 @@ class MockOfflineProvider(BaseLLMProvider):
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": f"[Mock Agent Response]: Bộ phận IT Helpdesk tiếp nhận hỗ trợ sự cố từ 8:00 đến 18:00 các ngày trong tuần. Thời gian phản hồi tiêu chuẩn (SLA) là 2 giờ làm việc cho sự cố khẩn cấp.",
+                "thought": "Câu hỏi chung về quy trình IT Helpdesk, trả lời trực tiếp không cần gọi Tool."
             }
 
 

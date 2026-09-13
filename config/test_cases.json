@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, bạn có thể cho tôi biết quy trình tiếp nhận và thời gian phản hồi (SLA) của bộ phận IT Helpdesk không?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt/kiến thức cơ bản, không cần gọi bất kỳ Tool nào.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu tình trạng ticket sự cố mạng có mã TK2026001 giúp tôi.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu sự cố, tự động phát sinh Tool Call 'query_ticket' với mã ticket TK2026001.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "ticket_creation",
+    "question": "Tôi là nhân viên NV2026001, máy tính của tôi bị mất kết nối VPN nội bộ công ty, hãy tạo giúp tôi một ticket hỗ trợ kỹ thuật mức độ High.",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'create_support_ticket' với đúng mã nhân viên NV2026001, phân loại 'Sự cố Mạng / VPN', và mức độ ưu tiên 'High'.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Tôi là nhân viên NV2026001, hãy kiểm tra giúp tôi ticket TK2026001 đã xử lý xong chưa. Nếu vẫn đang xử lý, hãy tạo một ticket mới yêu cầu cấp tài khoản mạng dự phòng mức độ High.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct: Tra cứu trạng thái ticket TK2026001 trước, quan sát thấy trạng thái đang xử lý nên tiến hành gọi tool tạo ticket mới theo yêu cầu.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Hãy kiểm tra giúp tôi tình trạng của ticket sự cố có mã TK9999999.",
+    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool query_ticket và đưa ra phản hồi lịch sự, chính xác không bịa đặt dữ liệu.",
+    "complexity": "Medium"
+  }
+]
